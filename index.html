@@ -164,6 +164,45 @@
     color: #fff;
   }
 
+  /* ── CYCLE SELECTOR ── */
+  .cycle-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .cycle-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all .2s;
+  }
+  .cycle-btn.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #fff;
+  }
+
+  /* ── SEANCE DATE ── */
+  .seance-date {
+    display: block;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--green-light);
+    margin-top: 2px;
+  }
+  .seance-btn.active .seance-date { color: #fff; }
+
   /* ── SECTION TITLE ── */
   .section-head {
     font-family: 'Barlow Condensed', sans-serif;
@@ -395,10 +434,7 @@
     border-color: var(--red);
     color: #fff;
   }
-  .seance-btn.done::after {
-    content: ' ✓';
-    color: var(--green-light);
-  }
+  .seance-btn.done { border-color: var(--green-light); }
 
   /* ── SAVE BTN ── */
   .save-btn {
@@ -555,6 +591,10 @@
 <!-- ═══════════════════════════════════════════ -->
 <div id="tab-seance" class="view active">
 
+  <!-- Cycle selector -->
+  <div class="section-head">Cycle</div>
+  <div class="cycle-selector" id="cycleSelector"></div>
+
   <!-- Week selector -->
   <div class="section-head">Semaine</div>
   <div class="week-selector" id="weekSelector"></div>
@@ -644,17 +684,24 @@
 // CONFIG — même projet Supabase que Jox et Fifi (base commune)
 // ═══════════════════════════════════════════════════
 const SUPABASE_URL = "https://itubxfyqqpthwpqhbrje.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dWJ4ZnlxcXB0aHdwcWhicmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNjk4NzcsImV4cCI6MjA5ODc0NTg3N30.l_E1eAgVRusOJNHHDGbn3ulEXexYJp25gPUG2_7CGBM";
+const SUPABASE_ANON_KEY = "eyJhbGci••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••";
 const APP_PIN = "7531"; // change ce code si tu veux, partage-le uniquement avec Loan
 const ATHLETE = "Loan";
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ═══════════════════════════════════════════════════
-// DATA — Programme Loan — Bloc 1 : RENFO (semaines 1 à 4)
+// DATA — Programme Loan
 // Méga-cycle prévu : Renfo (S1-S4) => Puissance (S5-S8) => Masse (S9-S12) => Force (S13-S16)
-// Seuls les blocs suivants ne sont pas encore définis (à ajouter une fois le bloc Renfo terminé).
+// Seuls les cycles suivants ne sont pas encore définis (à ajouter une fois le cycle Renfo terminé).
+// Numérotation des semaines continue sur tout le méga-cycle (S1..S16), donc pas de collision
+// de données entre cycles même si les libellés de séances se répètent.
 // ═══════════════════════════════════════════════════
+const CYCLES = {
+  "renfo": { label: "Renfo", weeks: ["S1","S2","S3","S4"] },
+  // "puissance": { label: "Puissance", weeks: ["S5","S6","S7","S8"] }, // à ajouter quand le coach le définira
+};
+
 const PROGRAMME = {
   "S1": { label: "Semaine 1", seances: ["1","2","3","4","5"] },
   "S2": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
@@ -662,7 +709,8 @@ const PROGRAMME = {
   "S4": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
 };
 
-const SEANCES = {
+// Séances des semaines 1-2 du cycle Renfo
+const SEANCES_V1 = {
   "1": {
     label: "1 — Jambes / Épaules",
     warmup: "<strong>Mobilité :</strong> 3 tours (10/côté dorsiflexion cheville, 10/côté ouverture de hanche, 10/côté rotation épaule élastique R1/R2/R3, 10 tirage horizontal élastique scapula) — <strong>Activation :</strong> 2 tours (10 air squat profond avec 3’’ pause en bas, 8 développé militaire haltère légères ou barre à vide)",
@@ -721,6 +769,77 @@ const SEANCES = {
   },
 };
 
+// Séances des semaines 3-4 du cycle Renfo (programme mis à jour par le coach)
+const SEANCES_V2 = {
+  "1": {
+    label: "1 — Jambes / Épaules",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville, 10/côté ouverture de hanche, 10/côté rotation épaule élastique R1/R2/R3, 10 tirage horizontal élastique scapula) — <strong>Activation :</strong> 2 tours (10 air squat profond avec 3’’ pause en bas, 8 développé militaire haltère légères ou barre à vide)",
+    exercices: [
+      { nom: "Back squat",                                 series: "4 × 8",    tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Développé militaire haltère",                series: "4 × 10",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Leg extension",                              series: "3 × 12",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Leg curl",                                   series: "3 × 12",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Élévations latérales",                       series: "4 × 10",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Élévations frontales",                       series: "4 × 10",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+    ]
+  },
+  "2": {
+    label: "2 — Dos / Biceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté rotation épaule R1/R2/R3, 10 mobilités dos rond/dos creux, 10 tirage vertical élastique scapula, 10 rotation thoracique) — <strong>Activation :</strong> 2 tours (10 biceps curl élastique lent, 10 tirage vertical léger)",
+    exercices: [
+      { nom: "Tractions",                             series: "4 × 5",  tempo: "1/0/1/0", rpe: "8", recup: "1'15" },
+      { nom: "Traction excentrique",                  series: "4 × 10", tempo: "5/0/0/0", rpe: "8", recup: "1'15" },
+      { nom: "Rowing buste penché barre",              series: "4 × 8",  tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Pull-over bras tendu poulie haute",      series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Biceps curl barre EZ",                   series: "4 × 10", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Biceps curl prise marteau",               series: "4 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+    ]
+  },
+  "3": {
+    label: "3 — Pecs / Triceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10 ouverture thoracique, 10 tirage horizontal élastique scapula, 10/côté rotation épaule élastique R1/R2/R3) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Développé couché barre",                       series: "4 × 8",  tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Développé incliné haltère",                    series: "4 × 8",  tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Écarté couché haltère",                        series: "3 × 10", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Triceps pull down corde poulie haute",         series: "4 × 8",  tempo: "1/0/1/1", rpe: "8", recup: "1'30" },
+      { nom: "Triceps corde poulie haute derrière soi",      series: "4 × 10", tempo: "1/0/1/1", rpe: "8", recup: "1'30" },
+    ]
+  },
+  "4": {
+    label: "4 — Jambes / Dos / Biceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville, 10/côté ouverture de hanche, 10/côté rotation épaule élastique R1/R2/R3, 10 tirage horizontal élastique scapula) — <strong>Activation :</strong> 2 tours (10 good morning élastique, 10 tirage horizontal élastique)",
+    exercices: [
+      { nom: "Fentes avant haltère",                  series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Tirage TRX",                             series: "4 × 8",  tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Hip thrust",                             series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Good morning",                           series: "4 × 10", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Superman",                               series: "4 × 30''", tempo: "—", rpe: "—", recup: "1'" },
+      { nom: "Biceps curl corde poulie basse",         series: "4 × 10", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Biceps curl incliné haltère",            series: "4 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+    ]
+  },
+  "5": {
+    label: "5 — Pecs / Triceps / Épaules",
+    warmup: "<strong>Mobilité :</strong> 3 tours (10 ouverture thoracique, 10 tirage horizontal élastique scapula, 10/côté rotation épaule élastique R1/R2/R3) — <strong>Activation :</strong> montée en charge développé incliné",
+    exercices: [
+      { nom: "Développé couché haltère",     series: "4 × 12",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Écarté couché haltère",        series: "4 × 10",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Shrug",                        series: "4 × 12",   tempo: "1/0/1/2", rpe: "8", recup: "1'30" },
+      { nom: "Oiseau",                       series: "3 × 12",   tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Triceps haltère au front",     series: "3 × 8",    tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Triceps corde poulie haute",   series: "3 × 12",   tempo: "1/0/1/1", rpe: "8", recup: "1'30" },
+    ]
+  },
+};
+
+// Retourne la définition de séance applicable pour une semaine donnée
+// (le programme a été révisé par le coach à partir de la semaine 3)
+function getSeanceDef(week, code) {
+  const usesV2 = (week === 'S3' || week === 'S4');
+  return (usesV2 ? SEANCES_V2 : SEANCES_V1)[code];
+}
+
 // Charges réelles de la semaine 1, déjà enregistrées dans le suivi Excel de Loan
 const WEEK1_WEIGHTS = {
   "1": { "Back squat": 44, "Développé militaire haltère": 8, "Leg extension": 15, "Leg curl": 22, "Élévations latérales": 4, "Élévations frontales": 4 },
@@ -737,13 +856,15 @@ const KEY_LIFTS = ["Back squat", "Développé couché barre", "Rowing buste penc
 const HOOPER_BANDS = [
   { min: 4,  max: 7.9,  label: "Excellent",    color: "#2A6B35", bg: "#D4EDDA" },
   { min: 8,  max: 15.9, label: "Bon",          color: "#1F4E79", bg: "#D6EAF8" },
-  { min: 16, max: 23.9, label: "Mauvais",      color: "#935116", bg: "#FDEBD0" },
+  { min: 16, max: 19.9, label: "Moyen",        color: "#7D6608", bg: "#FEF9E7" },
+  { min: 20, max: 23.9, label: "Mauvais",      color: "#935116", bg: "#FDEBD0" },
   { min: 24, max: 28,   label: "Très mauvais", color: "#7B1D1D", bg: "#FADBD8" },
 ];
 
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
+let currentCycle = "renfo";
 let currentWeek = "S1";
 let currentSeance = "1";
 let dataCache = {};
@@ -767,6 +888,7 @@ async function unlockApp() {
   await refreshData();
   document.getElementById('loadingMsg').style.display = 'none';
   document.getElementById('appRoot').style.display = 'block';
+  renderCycles();
   renderWeeks();
   renderSeanceNav();
   renderSeance();
@@ -817,9 +939,29 @@ function showTab(id) {
   if (id === 'tab-history') renderHistory();
 }
 
+function renderCycles() {
+  const el = document.getElementById('cycleSelector');
+  el.innerHTML = Object.keys(CYCLES).map(c => `
+    <button class="cycle-btn ${c === currentCycle ? 'active' : ''}"
+            onclick="selectCycle('${c}')">
+      ${CYCLES[c].label}
+    </button>
+  `).join('');
+}
+
+function selectCycle(c) {
+  currentCycle = c;
+  currentWeek = CYCLES[c].weeks[0];
+  currentSeance = PROGRAMME[currentWeek].seances[0];
+  renderCycles();
+  renderWeeks();
+  renderSeanceNav();
+  renderSeance();
+}
+
 function renderWeeks() {
   const el = document.getElementById('weekSelector');
-  el.innerHTML = Object.keys(PROGRAMME).map(wk => `
+  el.innerHTML = CYCLES[currentCycle].weeks.map(wk => `
     <button class="week-btn ${wk === currentWeek ? 'active' : ''}"
             onclick="selectWeek('${wk}')">
       ${PROGRAMME[wk].label}
@@ -841,10 +983,11 @@ function renderSeanceNav() {
   const el = document.getElementById('seanceNav');
   el.innerHTML = seances.map(s => {
     const key = `${currentWeek}_${s}`;
-    const done = data[key] ? 'done' : '';
-    const info = SEANCES[s];
+    const entry = data[key];
+    const done = entry ? 'done' : '';
+    const dateHtml = entry ? `<span class="seance-date">${entry.date}</span>` : '';
     return `<button class="seance-btn ${s === currentSeance ? 'active' : ''} ${done}"
-                    onclick="selectSeance('${s}')">Séance ${s}</button>`;
+                    onclick="selectSeance('${s}')">Séance ${s}${dateHtml}</button>`;
   }).join('');
 }
 
@@ -855,7 +998,7 @@ function selectSeance(s) {
 }
 
 function renderSeance() {
-  const seance = SEANCES[currentSeance];
+  const seance = getSeanceDef(currentWeek, currentSeance);
   const data = loadData();
   const key = `${currentWeek}_${currentSeance}`;
   const saved = data[key] || {};
@@ -940,7 +1083,7 @@ function updateHooper() {
 // SAVE
 // ═══════════════════════════════════════════════════
 async function saveSession() {
-  const seance = SEANCES[currentSeance];
+  const seance = getSeanceDef(currentWeek, currentSeance);
 
   const hooper = {
     sommeil: +document.getElementById('sl-sommeil').value,
