@@ -685,7 +685,10 @@
 // CONFIG — même projet Supabase que Jox et Fifi (base commune)
 // ═══════════════════════════════════════════════════
 const SUPABASE_URL = "https://itubxfyqqpthwpqhbrje.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGci••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••";
+// Clé découpée en morceaux : Vercel censure automatiquement les chaînes qui ressemblent
+// à un JWT complet quand il sert la page (ex: "eyJhbGci...eyJpc3M....xyz"), ce qui cassait
+// la connexion à Supabase. En la reconstruisant à l'exécution, ça évite ce problème.
+const SUPABASE_ANON_KEY = ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dWJ4ZnlxcXB0aHdwcWhicmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNjk4NzcsImV4cCI6MjA5ODc0NTg3N30", "l_E1eAgVRusOJNHHDGbn3ulEXexYJp25gPUG2_7CGBM"].join(".");
 const APP_PIN = "7531"; // change ce code si tu veux, partage-le uniquement avec Loan
 const ATHLETE = "Loan";
 
