@@ -737,10 +737,10 @@ const PROGRAMME = {
   "S2": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
   "S3": { label: "Semaine 3", seances: ["1","2","3","4","5"] },
   "S4": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
-  "S5": { label: "Semaine 5", seances: ["1","2","3","4","5"] },
-  "S6": { label: "Semaine 6", seances: ["1","2","3","4","5"] },
-  "S7": { label: "Semaine 7", seances: ["1","2","3","4","5"] },
-  "S8": { label: "Semaine 8", seances: ["1","2","3","4","5"] },
+  "S5": { label: "Semaine 1", seances: ["1","2","3","4","5"] },
+  "S6": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
+  "S7": { label: "Semaine 3", seances: ["1","2","3","4","5"] },
+  "S8": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
 };
 
 // Séances des semaines 1-2 du cycle Renfo
@@ -1308,7 +1308,9 @@ function renderDashboard() {
   `;
 
   // Sélecteur de cycle : ne liste que les cycles qui ont au moins une séance enregistrée
-  const cyclesWithData = Object.keys(CYCLES).filter(c => getCycleSeanceCodes(c).some(code => sessions.some(s => s.seance === code)));
+  // (on vérifie que la semaine de la séance appartient bien au cycle, car les codes de séances
+  // se répètent d'un cycle à l'autre pour Loan — sinon une séance du cycle Renfo apparaîtrait aussi sous Masse)
+  const cyclesWithData = Object.keys(CYCLES).filter(c => sessions.some(s => CYCLES[c].weeks.includes(s.week) && getCycleSeanceCodes(c).includes(s.seance)));
   if (!dashCycle || !cyclesWithData.includes(dashCycle)) {
     dashCycle = cyclesWithData[0] || null;
   }
@@ -1319,7 +1321,8 @@ function renderDashboard() {
   `).join('');
 
   // Sélecteur de séance : ne liste que les séances du cycle choisi qui ont au moins une charge enregistrée
-  const availableCodes = dashCycle ? getCycleSeanceCodes(dashCycle).filter(code => sessions.some(s => s.seance === code)) : [];
+  const dashCycleWeeks = dashCycle ? CYCLES[dashCycle].weeks : [];
+  const availableCodes = dashCycle ? getCycleSeanceCodes(dashCycle).filter(code => sessions.some(s => s.seance === code && dashCycleWeeks.includes(s.week))) : [];
 
   if (!dashSeance || !availableCodes.includes(dashSeance)) {
     dashSeance = availableCodes[0] || null;
@@ -1405,7 +1408,8 @@ function renderDashCharts() {
     return;
   }
 
-  const codeSessions = sessions.filter(s => s.seance === dashSeance).sort((a, b) => weekNum(a.week) - weekNum(b.week));
+  const cycleWeeks = dashCycle ? CYCLES[dashCycle].weeks : [];
+  const codeSessions = sessions.filter(s => s.seance === dashSeance && cycleWeeks.includes(s.week)).sort((a, b) => weekNum(a.week) - weekNum(b.week));
   const latestWeek = codeSessions.length ? codeSessions[codeSessions.length - 1].week : currentWeek;
   const def = getSeanceDef(latestWeek, dashSeance);
   let exoOrder = def ? def.exercices.map(e => e.nom) : [];
