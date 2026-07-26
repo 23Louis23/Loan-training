@@ -728,7 +728,8 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ═══════════════════════════════════════════════════
 const CYCLES = {
   "renfo": { label: "Renfo", weeks: ["S1","S2","S3","S4"] },
-  // "puissance": { label: "Puissance", weeks: ["S5","S6","S7","S8"] }, // à ajouter quand le coach le définira
+  "masse": { label: "Masse", weeks: ["S5","S6","S7","S8"] },
+  // prochain cycle à ajouter ici une fois défini par le coach
 };
 
 const PROGRAMME = {
@@ -736,6 +737,10 @@ const PROGRAMME = {
   "S2": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
   "S3": { label: "Semaine 3", seances: ["1","2","3","4","5"] },
   "S4": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
+  "S5": { label: "Semaine 5", seances: ["1","2","3","4","5"] },
+  "S6": { label: "Semaine 6", seances: ["1","2","3","4","5"] },
+  "S7": { label: "Semaine 7", seances: ["1","2","3","4","5"] },
+  "S8": { label: "Semaine 8", seances: ["1","2","3","4","5"] },
 };
 
 // Séances des semaines 1-2 du cycle Renfo
@@ -862,9 +867,78 @@ const SEANCES_V2 = {
   },
 };
 
+// Séances du cycle Masse (S5-S8)
+const SEANCES_MASSE = {
+  "1": {
+    label: "1 — Jambes / Épaules",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville, 10/côté ouverture de hanche, 10/côté rotation épaule élastique R1/R2/R3, 10 tirage horizontal élastique scapula) — <strong>Activation :</strong> 2 tours (10 air squat profond avec 3’’ pause en bas, 8 développé militaire haltère légères ou barre à vide)",
+    exercices: [
+      { nom: "Back squat",                        series: "4 × 8",       tempo: "2/1/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Développé militaire haltère",       series: "4 × 10",      tempo: "1/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Superset Leg extension / Curl",     series: "4 × 10 + 10", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Calf extension unilatéral DB",      series: "3 × 12",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Élévations latérales",              series: "4 × 10",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Élévations frontales",              series: "4 × 10",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Face Pull corde poulie haute",      series: "3 × 12",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+    ]
+  },
+  "2": {
+    label: "2 — Dos / Biceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté rotation épaule R1/R2/R3, 10 mobilités dos rond/dos creux, 10 tirage vertical élastique scapula, 10 rotation thoracique) — <strong>Activation :</strong> 2 tours (10 biceps curl élastique lent, 10 tirage vertical léger)",
+    exercices: [
+      { nom: "Tirage vertical",                   series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Tirage horizontal",                 series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Pull-over bras tendu poulie haute", series: "4 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl barre EZ",              series: "4 × 10", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl prise marteau",         series: "4 × 10", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl haltère avec rotation", series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+    ]
+  },
+  "3": {
+    label: "3 — Pecs / Triceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10 ouverture thoracique, 10 tirage horizontal élastique scapula, 10/côté rotation épaule élastique R1/R2/R3) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Dev couché barre",                                series: "4 × 10", tempo: "1/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Dev incliné haltère",                              series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Écarté couché haltère",                            series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Triceps pull down poulie haute unilatéral",       series: "4 × 8",  tempo: "1/0/1/1", rpe: "8",    recup: "1'15" },
+      { nom: "Triceps corde poulie haute derrière soi",         series: "4 × 10", tempo: "1/0/1/1", rpe: "8",    recup: "1'30" },
+      { nom: "Pull over assis DB unilatéral",                   series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'15" },
+    ]
+  },
+  "4": {
+    label: "4 — Jambes / Dos / Biceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville, 10/côté ouverture de hanche, 10/côté rotation épaule élastique R1/R2/R3, 10 tirage horizontal élastique scapula) — <strong>Activation :</strong> 2 tours (10 good morning élastique, 10 tirage horizontal élastique)",
+    exercices: [
+      { nom: "Hip thrust",                        series: "4 × 8",       tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Rowing haltère unilatéral",         series: "4 × 8",       tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Leg extension",                     series: "3 × 12",      tempo: "1/0/1/0", rpe: "8",    recup: "1'15" },
+      { nom: "Good morning",                      series: "4 × 10",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Gainage lombaire",                  series: "4 × 30''/1'", tempo: "/",       rpe: "/",    recup: "1'" },
+      { nom: "Biceps curl corde poulie basse",    series: "4 × 10",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl incliné haltère",       series: "4 × 12",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+    ]
+  },
+  "5": {
+    label: "5 — Pecs / Triceps / Épaules",
+    warmup: "<strong>Mobilité :</strong> 3 tours (10 ouverture thoracique, 10 tirage horizontal élastique scapula, 10/côté rotation épaule élastique R1/R2/R3) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Dev couché haltère",              series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Dev militaire barre",              series: "4 × 10", tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Écarté couché haltère",           series: "4 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Schrug",                           series: "3 × 12", tempo: "1/0/1/2", rpe: "8",    recup: "1'30" },
+      { nom: "Oiseau",                           series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Triceps haltère au front",        series: "4 × 8",  tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Triceps corde poulie haute",      series: "3 × 12", tempo: "1/0/1/1", rpe: "8",    recup: "1'30" },
+    ]
+  },
+};
+
 // Retourne la définition de séance applicable pour une semaine donnée
-// (le programme a été révisé par le coach à partir de la semaine 3)
+// (le programme a été révisé par le coach à partir de la semaine 3, puis le cycle Masse commence en S5)
 function getSeanceDef(week, code) {
+  const wn = weekNum(week);
+  if (wn >= 5) return SEANCES_MASSE[code];
   const usesV2 = (week === 'S3' || week === 'S4');
   return (usesV2 ? SEANCES_V2 : SEANCES_V1)[code];
 }
@@ -1219,7 +1293,7 @@ function renderDashboard() {
       <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
     </div>
     <div class="stat-card">
-      <div class="stat-val">${totalWeeks}<span style="font-size:18px;color:var(--muted)">/4</span></div>
+      <div class="stat-val">${totalWeeks}<span style="font-size:18px;color:var(--muted)">/${Object.keys(PROGRAMME).length}</span></div>
       <div class="stat-lbl">Semaines actives</div>
     </div>
     <div class="stat-card">
