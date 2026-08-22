@@ -1059,9 +1059,12 @@ function weekNum(w) {
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-let currentCycle = "renfo";
-let currentWeek = "S1";
-let currentSeance = "1";
+// Ouvre l'app sur le dernier cycle défini (le plus récent ajouté par le coach),
+// plutôt que de toujours revenir au tout premier cycle.
+const CYCLE_KEYS = Object.keys(CYCLES);
+let currentCycle = CYCLE_KEYS[CYCLE_KEYS.length - 1];
+let currentWeek = CYCLES[currentCycle].weeks[0];
+let currentSeance = PROGRAMME[currentWeek].seances[0];
 let dashCycle = null;
 let dashSeance = null;
 let dataCache = {};
