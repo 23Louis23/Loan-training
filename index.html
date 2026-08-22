@@ -335,6 +335,12 @@
     line-height: 1.6;
   }
   .warmup-card strong { color: var(--text); }
+  .exo-series-block {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 0 16px 10px;
+    line-height: 1.7;
+  }
 
   /* ── EXERCISE TABLE ── */
   .exo-card {
@@ -729,6 +735,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CYCLES = {
   "renfo": { label: "Renfo", weeks: ["S1","S2","S3","S4"] },
   "masse": { label: "Masse", weeks: ["S5","S6","S7","S8"] },
+  "force": { label: "Force", weeks: ["S9","S10","S11","S12","S13"] },
   // prochain cycle à ajouter ici une fois défini par le coach
 };
 
@@ -741,6 +748,11 @@ const PROGRAMME = {
   "S6": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
   "S7": { label: "Semaine 3", seances: ["1","2","3","4","5"] },
   "S8": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
+  "S9":  { label: "Semaine 1", seances: ["F1","F2","F3","F4","F5"] },
+  "S10": { label: "Semaine 2", seances: ["F1","F2","F3","F4","F5"] },
+  "S11": { label: "Semaine 3", seances: ["F1","F2","F3","F4","F5"] },
+  "S12": { label: "Semaine 4", seances: ["F1","F2","F3","F4","F5"] },
+  "S13": { label: "Semaine 5", seances: ["F1","F2","F3","F4","F5"] },
 };
 
 // Séances des semaines 1-2 du cycle Renfo
@@ -934,10 +946,73 @@ const SEANCES_MASSE = {
   },
 };
 
+// Séances du cycle Force (S9-S12)
+const SEANCES_FORCE = {
+  "F1": {
+    label: "F1 — Jambes",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville — chevalier servant, remonte la cheville vers le haut en bloquant 3’’ en haut, 10/côté ouverture de hanche — position quadrupédie, genou fléchi, 5 grands cercles en contrôlé dans chaque sens) — <strong>Activation :</strong> 2 tours (10 air squat profond avec 3’’ pause en bas, montée en charge squat)",
+    exercices: [
+      { nom: "Back squat",                     series: "4 × 4",  tempo: "/", rpe: "9/10", recup: "3'30-4'" },
+      { nom: "Hip thrust",                     series: "4 × 10", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Leg extension",                  series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Leg curl",                       series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Calf extension unilatéral DB",   series: "3 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Circuit abdo", series: "3/4 tours :<br>— 10 roulette<br>— 15 crunch<br>— 1' gainage", multilineSeries: true },
+    ]
+  },
+  "F2": {
+    label: "F2 — Biceps / Triceps",
+    warmup: "",
+    exercices: [
+      { nom: "Drop-set (x3) : Biceps curl corde poulie basse",              series: "4 × 12+", tempo: "/", rpe: "10", recup: "2'", dropWeights: 3 },
+      { nom: "Drop-set (x3) : Triceps corde poulie haute",                  series: "4 × 12+", tempo: "/", rpe: "10", recup: "2'", dropWeights: 3 },
+      { nom: "Superset : Biceps curl banc incliné / Triceps corde poulie basse", series: "3 × 12 + 12", tempo: "/", rpe: "8", recup: "1'15", superset: ["Biceps curl", "Triceps"] },
+      { nom: "Superset : Biceps marteau haltère alterné / Triceps barre EZ au front", series: "3 × 12 + 12", tempo: "/", rpe: "8", recup: "1'15", superset: ["Biceps marteau", "Triceps EZ"] },
+      { nom: "Superset : Biceps curl barre EZ / Triceps poulie haute unilatéral", series: "3 × 10 + 10", tempo: "/", rpe: "8", recup: "1'15", superset: ["Biceps EZ", "Triceps"] },
+    ]
+  },
+  "F3": {
+    label: "F3 — Pecs",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10 ouverture thoracique, 10 tirage horizontal élastique scapula, 10/côté rotation épaule élastique R1/R2/R3) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Dev couché barre",        series: "4 × 5",  tempo: "/", rpe: "9/10", recup: "3'30-4'" },
+      { nom: "Dev incliné haltère",     series: "4 × 8",  tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Écarté couché haltère",   series: "3 × 12", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Pecs fly",                series: "3 × 12", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Pompes surélevé",         series: "4 × 8",  tempo: "/", rpe: "8", recup: "1'15" },
+    ]
+  },
+  "F4": {
+    label: "F4 — Dos",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté rotation épaule R1/R2/R3, 10 mobilités dos rond/dos creux, 10 tirage vertical élastique scapula, 10 rotation thoracique) — <strong>Activation :</strong> 2 tours (10 tirage vertical léger)",
+    exercices: [
+      { nom: "Tractions",                                series: "4 × 6",  tempo: "/", rpe: "9/10", recup: "2'" },
+      { nom: "Tirage vertical",                          series: "3 × 12", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Tirage horizontal",                        series: "4 × 10", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Rowing buste penché haltère unilatéral",   series: "3 × 12", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Pull-over bras tendu poulie haute",        series: "4 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Circuit abdo", series: "3/4 tours :<br>— 10 roulette<br>— 15 crunch<br>— 1' gainage", multilineSeries: true },
+    ]
+  },
+  "F5": {
+    label: "F5 — Épaule",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10 rotation R1/R2/R3, 10 tirage vertical scapula) — <strong>Activation :</strong> 2 tours (montée en charge dev militaire)",
+    exercices: [
+      { nom: "Dev militaire haltère",                       series: "4 × 8",       tempo: "/", rpe: "9/10", recup: "2'" },
+      { nom: "Élévation latérale",                          series: "3 × 12",      tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Élévations frontales corde poulie basse",     series: "3 × 12",      tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Oiseau",                                      series: "4 × 10",      tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Face pull poulie haute",                      series: "4 × 30''/1'", tempo: "/", rpe: "8", recup: "1'30" },
+    ]
+  },
+};
+
 // Retourne la définition de séance applicable pour une semaine donnée
-// (le programme a été révisé par le coach à partir de la semaine 3, puis le cycle Masse commence en S5)
+// (le programme a été révisé par le coach à partir de la semaine 3, puis le cycle Masse
+// commence en S5, et le cycle Force en S9)
 function getSeanceDef(week, code) {
   const wn = weekNum(week);
+  if (wn >= 9) return SEANCES_FORCE[code];
   if (wn >= 5) return SEANCES_MASSE[code];
   const usesV2 = (week === 'S3' || week === 'S4');
   return (usesV2 ? SEANCES_V2 : SEANCES_V1)[code];
@@ -1153,15 +1228,27 @@ function renderSeance() {
 
   seance.exercices.forEach((exo, i) => {
     const savedNote = saved.notes?.[exo.nom] ?? '';
-    if (exo.superset) {
-      const count = exo.superset.length;
+    if (exo.multilineSeries) {
+      html += `<div class="exo-item">
+      <div class="exo-row" style="grid-template-columns:1fr">
+        <span class="exo-name">${exo.nom}</span>
+      </div>
+      <div class="exo-series-block">${exo.series}</div>
+      <div class="exo-note-row">
+        <input type="text" class="note-input" id="note_${i}" value="${savedNote}" placeholder="Note">
+      </div>
+    </div>`;
+      return;
+    }
+    if (exo.dropWeights || exo.superset) {
+      const count = exo.superset ? exo.superset.length : exo.dropWeights;
       const savedArr = Array.isArray(saved.weights?.[exo.nom]) ? saved.weights[exo.nom] : [];
       const weightInputs = Array.from({ length: count }, (_, di) => {
         const v = savedArr[di] ?? '';
-        const label = `<span style="font-size:9px;color:var(--muted);display:block;text-align:center;margin-bottom:2px">${exo.superset[di]}</span>`;
+        const label = exo.superset ? `<span style="font-size:9px;color:var(--muted);display:block;text-align:center;margin-bottom:2px">${exo.superset[di]}</span>` : '';
         return `<div style="display:flex;flex-direction:column;align-items:center">${label}<input type="number" class="weight-input ${v !== '' ? 'saved' : ''}"
                  id="w_${i}_${di}" value="${v}" placeholder="—" min="0" step="1.25"
-                 style="width:38px;font-size:11px;padding:4px 2px;text-align:center"
+                 style="width:${exo.superset ? '38px' : '28px'};font-size:11px;padding:4px 2px;text-align:center"
                  oninput="this.classList.remove('saved')"></div>`;
       }).join('');
       html += `<div class="exo-item">
@@ -1252,8 +1339,10 @@ async function saveSession() {
   seance.exercices.forEach((exo, i) => {
     const noteInput = document.getElementById(`note_${i}`);
     if (noteInput && noteInput.value.trim()) notes[exo.nom] = noteInput.value.trim();
-    if (exo.superset) {
-      const arr = Array.from({ length: exo.superset.length }, (_, di) => {
+    if (exo.multilineSeries) return;
+    if (exo.dropWeights || exo.superset) {
+      const count = exo.superset ? exo.superset.length : exo.dropWeights;
+      const arr = Array.from({ length: count }, (_, di) => {
         const input = document.getElementById(`w_${i}_${di}`);
         if (input && input.value) {
           input.classList.add('saved');
@@ -1451,7 +1540,7 @@ function renderDashCharts() {
   const codeSessions = sessions.filter(s => s.seance === dashSeance && cycleWeeks.includes(s.week)).sort((a, b) => weekNum(a.week) - weekNum(b.week));
   const latestWeek = codeSessions.length ? codeSessions[codeSessions.length - 1].week : currentWeek;
   const def = getSeanceDef(latestWeek, dashSeance);
-  let exoOrder = def ? def.exercices.filter(e => !e.superset).map(e => e.nom) : [];
+  let exoOrder = def ? def.exercices.filter(e => !e.superset && !e.dropWeights && !e.multilineSeries).map(e => e.nom) : [];
   codeSessions.forEach(s => Object.keys(s.weights || {}).forEach(k => { if (!exoOrder.includes(k)) exoOrder.push(k); }));
 
   let html = '';
