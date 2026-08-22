@@ -1183,8 +1183,10 @@ function renderSeanceNav() {
     const entry = data[key];
     const done = entry ? 'done' : '';
     const dateHtml = entry ? `<span class="seance-date">${entry.date}</span>` : '';
+    const info = getSeanceDef(currentWeek, s);
+    const label = s.startsWith('F') && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${s}`;
     return `<button class="seance-btn ${s === currentSeance ? 'active' : ''} ${done}"
-                    onclick="selectSeance('${s}')">Séance ${s}${dateHtml}</button>`;
+                    onclick="selectSeance('${s}')">${label}${dateHtml}</button>`;
   }).join('');
 }
 
@@ -1457,9 +1459,11 @@ function renderDashboard() {
   }
 
   const navEl = document.getElementById('dashSeanceNav');
-  navEl.innerHTML = availableCodes.map(code => `
-    <button class="seance-btn ${code === dashSeance ? 'active' : ''}" onclick="selectDashSeance('${code}')">Séance ${code}</button>
-  `).join('');
+  navEl.innerHTML = availableCodes.map(code => {
+    const info = dashCycleWeeks.length ? getSeanceDef(dashCycleWeeks[0], code) : null;
+    const label = code.startsWith('F') && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${code}`;
+    return `<button class="seance-btn ${code === dashSeance ? 'active' : ''}" onclick="selectDashSeance('${code}')">${label}</button>`;
+  }).join('');
 
   renderDashCharts();
 }
