@@ -748,7 +748,7 @@ const PROGRAMME = {
   "S6": { label: "Semaine 2", seances: ["1","2","3","4","5"] },
   "S7": { label: "Semaine 3", seances: ["1","2","3","4","5"] },
   "S8": { label: "Semaine 4", seances: ["1","2","3","4","5"] },
-  "S9":  { label: "Semaine 1", seances: ["F1","F2","F3","F4","F5"] },
+  "S9":  { label: "Semaine 1", seances: ["F1","F2","F3","F45"] },
   "S10": { label: "Semaine 2", seances: ["F1","F2","F3","F4","F5"] },
   "S11": { label: "Semaine 3", seances: ["F1","F2","F3","F4","F5"] },
   "S12": { label: "Semaine 4", seances: ["F1","F2","F3","F4","F5"] },
@@ -1003,6 +1003,21 @@ const SEANCES_FORCE = {
       { nom: "Élévations frontales corde poulie basse",     series: "3 × 12",      tempo: "/", rpe: "8", recup: "1'30" },
       { nom: "Oiseau",                                      series: "4 × 10",      tempo: "/", rpe: "8", recup: "1'30" },
       { nom: "Face pull poulie haute",                      series: "4 × 30''/1'", tempo: "/", rpe: "8", recup: "1'30" },
+    ]
+  },
+  // Séance fusionnée Dos + Épaules, semaine 1 du cycle Force uniquement
+  // (Loan a manqué lundi et mardi pour maladie, donc 4 séances au lieu de 5 cette semaine-là)
+  "F45": {
+    label: "F4/5 — Dos + Épaules",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté rotation épaule R1/R2/R3, 10 mobilités dos rond/dos creux, 10 tirage vertical élastique scapula, 10 rotation thoracique, 10 tirage vertical scapula) — <strong>Activation :</strong> 2 tours (10 tirage vertical léger, montée en charge dev militaire)",
+    exercices: [
+      { nom: "Tractions",                                    series: "4 × 6",  tempo: "/", rpe: "9/10", recup: "2'" },
+      { nom: "Tirage horizontal",                            series: "4 × 10", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Pull-over bras tendu poulie haute",            series: "4 × 12", tempo: "1/0/1/0", rpe: "8", recup: "1'30" },
+      { nom: "Dev militaire haltère",                        series: "4 × 8",  tempo: "/", rpe: "9/10", recup: "2'" },
+      { nom: "Superset : Élévations latérales / Élévations frontales corde poulie basse", series: "3 × 12 + 12", tempo: "/", rpe: "8", recup: "1'30", superset: ["Latérales", "Frontales"] },
+      { nom: "Face pull poulie haute",                       series: "4 × 30''/1'", tempo: "/", rpe: "8", recup: "1'30" },
+      { nom: "Circuit abdo", series: "3/4 tours :<br>— 10 roulette<br>— 15 crunch<br>— 1' gainage", multilineSeries: true },
     ]
   },
 };
