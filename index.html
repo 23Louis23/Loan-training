@@ -736,6 +736,7 @@ const CYCLES = {
   "renfo": { label: "Renfo", weeks: ["S1","S2","S3","S4"] },
   "masse": { label: "Masse", weeks: ["S5","S6","S7","S8"] },
   "force": { label: "Force", weeks: ["S9","S10","S11","S12","S13"] },
+  "masse2": { label: "Masse", weeks: ["S14","S15","S16","S17","S18"] },
   // prochain cycle à ajouter ici une fois défini par le coach
 };
 
@@ -753,6 +754,11 @@ const PROGRAMME = {
   "S11": { label: "Semaine 3", seances: ["F1","F2","F3","F4","F5"] },
   "S12": { label: "Semaine 4", seances: ["F1","F2","F3","F4","F5"] },
   "S13": { label: "Semaine 5", seances: ["F1","F2","F3","F4","F5"] },
+  "S14": { label: "Semaine 1", seances: ["M1","M2","M3","M4","M5"] },
+  "S15": { label: "Semaine 2", seances: ["M1","M2","M3","M4","M5"] },
+  "S16": { label: "Semaine 3", seances: ["M1","M2","M3","M4","M5"] },
+  "S17": { label: "Semaine 4", seances: ["M1","M2","M3","M4","M5"] },
+  "S18": { label: "Semaine 5", seances: ["M1","M2","M3","M4","M5"] },
 };
 
 // Séances des semaines 1-2 du cycle Renfo
@@ -1022,11 +1028,78 @@ const SEANCES_FORCE = {
   },
 };
 
+// Séances du 2ème cycle Masse (S14-S18)
+const SEANCES_MASSE2 = {
+  "M1": {
+    label: "M1 — Jambes / Épaule",
+    warmup: "<strong>Échauffement — Activation :</strong> 10/côté abduction hanche allongé au sol, 10 glute bridge avec 2’’ iso en haut, 10 montées sur pointe de pied, 10 grands cercles d’épaule — <strong>Mobilité :</strong> 2 tours (10/côté dorsiflexion cheville — chevalier servant, remonte la cheville vers le haut en bloquant 3’’ en haut, 10/côté ouverture de hanche — position quadrupédie, genou fléchi, 5 grands cercles en contrôlé dans chaque sens, 10 rotation externe épaule élastique) — <strong>Activation :</strong> montée en charge squat",
+    exercices: [
+      { nom: "Back squat",                series: "4 × 8",  tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Split squat",               series: "3 × 12", tempo: "1/0/1/0", rpe: "7/8",  recup: "1'30" },
+      { nom: "Leg extension",             series: "3 × 10", tempo: "1/0/1/0", rpe: "7/8",  recup: "1'30" },
+      { nom: "Leg curl",                  series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Élévations latérales",      series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'15" },
+      { nom: "Oiseaux",                   series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'15" },
+      { nom: "Circuit abdo", series: "3 tours :<br>— 10/côté Pallof press<br>— 10 crunch poulie<br>— 30''/côté DB hold un bras<br>— 1' gainage", multilineSeries: true },
+    ]
+  },
+  "M2": {
+    label: "M2 — Dos / Biceps",
+    warmup: "<strong>Mobilité :</strong> 2 tours (10/côté rotation épaule R1/R2/R3, 10 mobilités dos rond/dos creux, 10 tirage vertical élastique scapula, 10 rotation thoracique) — <strong>Activation :</strong> 2 tours (10 biceps curl élastique lent, 10 tirage vertical léger)",
+    exercices: [
+      { nom: "Tirage vertical",                      series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Biceps curl barre EZ",                 series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Tirage horizontal",                    series: "3 × 12", tempo: "1/0/1/0", rpe: "7/8",  recup: "1'30" },
+      { nom: "Pull-over bras tendu poulie haute",    series: "4 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl prise marteau",            series: "3 × 10", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Face pull poulie haute",               series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+    ]
+  },
+  "M3": {
+    label: "M3 — Pecs / Épaule / Triceps",
+    warmup: "<strong>Échauffement :</strong> 2 tours (10 pull apart élastique, 10 rotation externe élastique, 10 pompes scapula, 30’’ gainage, 10 ouverture thoracique) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Dev couché haltère",        series: "4 × 8",  tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Développé militaire",       series: "3 × 10", tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Dev décliné haltère",       series: "3 × 10", tempo: "1/0/1/0", rpe: "7/8",  recup: "1'30" },
+      { nom: "Écarté couché haltère",     series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Superset : Triceps barre au front / Élévations latérales", series: "3 × 10 + 10", tempo: "1/0/1/0", rpe: "8", recup: "1'15", superset: ["Triceps front", "Élév. latérales"] },
+      { nom: "Extension triceps corde poulie haute", series: "3 × 12", tempo: "1/0/1/1", rpe: "8", recup: "1'30" },
+    ]
+  },
+  "M4": {
+    label: "M4 — Jambes / Biceps",
+    warmup: "<strong>Échauffement :</strong> 2 tours (10/côté abduction hanche allongé au sol, 10 glute bridge avec 2’’ iso en haut, 10 montées sur pointe de pied) — <strong>Activation :</strong> 2 tours (10 good morning élastique, 10 tirage horizontal élastique)",
+    exercices: [
+      { nom: "Fentes haltère",              series: "4 × 10/côté", tempo: "1/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Biceps curl corde poulie basse", series: "4 × 8",    tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "RDL",                         series: "4 × 8",       tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Leg curl",                    series: "3 × 10",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Calf extension",              series: "3 × 8",       tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Biceps curl incliné haltère", series: "3 × 12",      tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Core", series: "3 tours :<br>— 12 roulette<br>— 20 crunch<br>— 30 cheville touch", multilineSeries: true },
+    ]
+  },
+  "M5": {
+    label: "M5 — Pecs / Dos / Triceps",
+    warmup: "<strong>Échauffement :</strong> 2 tours (10 ouverture thoracique, 10 pompes scapula, 10/côté rotation externe épaule élastique, 10 rétropulsion élastique) — <strong>Activation :</strong> montée en charge développé couché",
+    exercices: [
+      { nom: "Dev incliné haltère",                    series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Tirage horizontal",                      series: "4 × 8",  tempo: "2/0/2/0", rpe: "9/10", recup: "2'" },
+      { nom: "Dips",                                   series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Rowing haltère buste incliné",           series: "3 × 10", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Pec fly",                                series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
+      { nom: "Triceps corde poulie haute derrière soi", series: "3 × 12", tempo: "1/0/1/1", rpe: "8",   recup: "1'30" },
+    ]
+  },
+};
+
 // Retourne la définition de séance applicable pour une semaine donnée
 // (le programme a été révisé par le coach à partir de la semaine 3, puis le cycle Masse
 // commence en S5, et le cycle Force en S9)
 function getSeanceDef(week, code) {
   const wn = weekNum(week);
+  if (wn >= 14) return SEANCES_MASSE2[code];
   if (wn >= 9) return SEANCES_FORCE[code];
   if (wn >= 5) return SEANCES_MASSE[code];
   const usesV2 = (week === 'S3' || week === 'S4');
@@ -1202,7 +1275,7 @@ function renderSeanceNav() {
     const done = entry ? 'done' : '';
     const dateHtml = entry ? `<span class="seance-date">${entry.date}</span>` : '';
     const info = getSeanceDef(currentWeek, s);
-    const label = s.startsWith('F') && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${s}`;
+    const label = /^[FM]/.test(s) && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${s}`;
     return `<button class="seance-btn ${s === currentSeance ? 'active' : ''} ${done}"
                     onclick="selectSeance('${s}')">${label}${dateHtml}</button>`;
   }).join('');
@@ -1479,7 +1552,7 @@ function renderDashboard() {
   const navEl = document.getElementById('dashSeanceNav');
   navEl.innerHTML = availableCodes.map(code => {
     const info = dashCycleWeeks.length ? getSeanceDef(dashCycleWeeks[0], code) : null;
-    const label = code.startsWith('F') && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${code}`;
+    const label = /^[FM]/.test(code) && info?.label ? (info.label.split('—')[1] || info.label).trim() : `Séance ${code}`;
     return `<button class="seance-btn ${code === dashSeance ? 'active' : ''}" onclick="selectDashSeance('${code}')">${label}</button>`;
   }).join('');
 
