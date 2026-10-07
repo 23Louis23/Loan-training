@@ -1060,7 +1060,7 @@ const SEANCES_MASSE2 = {
     warmup: "<strong>Échauffement :</strong> 2 tours (10 pull apart élastique, 10 rotation externe élastique, 10 pompes scapula, 30’’ gainage, 10 ouverture thoracique) — <strong>Activation :</strong> montée en charge développé couché",
     exercices: [
       { nom: "Dev couché haltère",        series: "4 × 8",  tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
-      { nom: "Développé militaire",       series: "3 × 10", tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
+      { nom: "Développé militaire barre", series: "4 × 10", tempo: "2/0/1/0", rpe: "9/10", recup: "2'" },
       { nom: "Dev décliné haltère",       series: "3 × 10", tempo: "1/0/1/0", rpe: "7/8",  recup: "1'30" },
       { nom: "Écarté couché haltère",     series: "3 × 12", tempo: "1/0/1/0", rpe: "8",    recup: "1'30" },
       { nom: "Superset : Triceps barre au front / Élévations latérales", series: "3 × 10 + 10", tempo: "1/0/1/0", rpe: "8", recup: "1'15", superset: ["Triceps front", "Élév. latérales"] },
@@ -1106,12 +1106,19 @@ const SEANCE_M2_S14 = {
     ]
   };
 
+// M3 telle qu'elle était lors de la séance déjà faite en S14 (Développé militaire 3 × 10) — on n'y touche pas
+const SEANCE_M3_S14 = {
+  ...SEANCES_MASSE2.M3,
+  exercices: SEANCES_MASSE2.M3.exercices.map(e => e.nom === "Développé militaire barre" ? { ...e, nom: "Développé militaire", series: "3 × 10" } : e),
+};
+
 // Retourne la définition de séance applicable pour une semaine donnée
 // (le programme a été révisé par le coach à partir de la semaine 3, puis le cycle Masse
 // commence en S5, et le cycle Force en S9)
 function getSeanceDef(week, code) {
   const wn = weekNum(week);
   if (week === 'S14' && code === 'M2') return SEANCE_M2_S14;
+  if (week === 'S14' && code === 'M3') return SEANCE_M3_S14;
   if (wn >= 14) return SEANCES_MASSE2[code];
   if (wn >= 9) return SEANCES_FORCE[code];
   if (wn >= 5) return SEANCES_MASSE[code];
